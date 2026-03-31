@@ -270,7 +270,7 @@ inline sensor_msgs::msg::PointCloud2 SourceDriver::ToRosMsg(const LidarDecodedFr
   offset = addPointField(ros_msg, "ring", 1, sensor_msgs::msg::PointField::UINT16, offset);
   offset = addPointField(ros_msg, "timestamp", 1, sensor_msgs::msg::PointField::FLOAT64, offset);
   offset = addPointField(ros_msg, "range", 1, sensor_msgs::msg::PointField::FLOAT32, offset);
-  offset = addPointField(ros_msg, "azimuth", 1, sensor_msgs::msg::PointField::INT32, offset);
+  offset = addPointField(ros_msg, "azimuth", 1, sensor_msgs::msg::PointField::FLOAT32, offset);
 
   ros_msg.point_step = offset;
   ros_msg.row_step = ros_msg.width * ros_msg.point_step;
@@ -284,7 +284,7 @@ inline sensor_msgs::msg::PointCloud2 SourceDriver::ToRosMsg(const LidarDecodedFr
   sensor_msgs::PointCloud2Iterator<uint16_t> iter_ring_(ros_msg, "ring");
   sensor_msgs::PointCloud2Iterator<double> iter_timestamp_(ros_msg, "timestamp");
   sensor_msgs::PointCloud2Iterator<float> iter_range_(ros_msg, "range");
-  sensor_msgs::PointCloud2Iterator<int> iter_azimuth_(ros_msg, "azimuth");
+  sensor_msgs::PointCloud2Iterator<float> iter_azimuth_(ros_msg, "azimuth");
   for (size_t i = 0; i < points_number; i++)
   {
     LidarPointXYZIRT point = pPoints[i];
