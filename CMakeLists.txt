@@ -248,9 +248,40 @@ if($ENV{ROS_VERSION} MATCHES "2")
   # "tf2_geometry_msgs"
   )
 
+  find_package(rclcpp_components REQUIRED)
+  add_library(hesai_ros_driver_component SHARED
+    src/manager/source_driver_ros2_composable.cc
+  )
+  target_link_libraries(hesai_ros_driver_component
+    ${YAML_CPP_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${LIB_TARGETS}
+  )
+  target_include_directories(hesai_ros_driver_component PRIVATE
+    src/manager
+    src/msg/ros_msg
+    src/msg/rs_msg
+    src/utility
+    ${CMAKE_CURRENT_BINARY_DIR}
+  )
+  ament_target_dependencies(hesai_ros_driver_component
+    "ament_index_cpp"
+    "rcl_interfaces"
+    "rclcpp"
+    "rclcpp_components"
+    "rcutils"
+    "std_msgs"
+    "sensor_msgs"
+    # "tf2_geometry_msgs"
+  )
+  rclcpp_components_register_nodes(hesai_ros_driver_component
+    "SourceDriverComposable"
+  )
+
 if(($ENV{ROS_DISTRO} STREQUAL "kilted") OR ($ENV{ROS_DISTRO} STREQUAL "jazzy") OR ($ENV{ROS_DISTRO} STREQUAL "humble"))
   rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
   target_link_libraries(hesai_ros_driver_node "${cpp_typesupport_target}")
+  target_link_libraries(hesai_ros_driver_component "${cpp_typesupport_target}")
 else()
   rosidl_target_interfaces(hesai_ros_driver_node  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 endif()
@@ -258,6 +289,9 @@ endif()
   install(TARGETS
           hesai_ros_driver_node
           DESTINATION lib/${PROJECT_NAME})
+  install(TARGETS
+          hesai_ros_driver_component
+          LIBRARY DESTINATION lib)
   install(TARGETS
           ${LIB_TARGETS}
           DESTINATION lib)
